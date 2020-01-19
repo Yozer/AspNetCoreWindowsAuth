@@ -10,7 +10,7 @@ namespace NativeConsolePKCEClient
 {
     public class Program
     {
-        static string _authority = "https://localhost:44364";
+        static string _authority = "https://localhost:44397";
         static string _api = "https://localhost:44342/api/values";
 
         static OidcClient _oidcClient;
