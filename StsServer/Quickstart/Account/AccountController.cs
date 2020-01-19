@@ -446,6 +446,8 @@ namespace IdentityServer4.Quickstart.UI
                 // trigger windows auth
                 // since windows auth don't support the redirect uri,
                 // this URL is re-triggered when we call challenge
+                //HttpContext.Response.Headers.Add("WWW-Authenticate", "NTLM");
+                //return Unauthorized();
                 return Challenge(AccountOptions.WindowsAuthenticationSchemeName);
             }
         }

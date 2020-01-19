@@ -4,6 +4,7 @@ using Serilog;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using IdentityModel.OidcClient.Browser;
 
 namespace NativeConsolePKCEClient
 {
@@ -31,8 +32,9 @@ namespace NativeConsolePKCEClient
             {
                 Authority = _authority,
                 ClientId = "native.code",
+                ClientSecret = "native_api_secret",
                 RedirectUri = redirectUri,
-                Scope = "openid profile native_api",
+                Scope = "openid profile native_api offline_access",
                 FilterClaims = false,
                 Browser = browser,
                 Flow = OidcClientOptions.AuthenticationFlow.AuthorizationCode,
@@ -49,7 +51,11 @@ namespace NativeConsolePKCEClient
             options.LoggerFactory.AddSerilog(serilog);
 
             _oidcClient = new OidcClient(options); 
-             var result = await _oidcClient.LoginAsync(new LoginRequest());
+             var result = await _oidcClient.LoginAsync(new LoginRequest
+             {
+                 BrowserDisplayMode = DisplayMode.Hidden,
+                 FrontChannelExtraParameters = new { acr_values = "idp:Windows" }
+             });
 
             ShowResult(result);
             await NextSteps(result);

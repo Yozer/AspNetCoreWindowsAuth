@@ -6,6 +6,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -20,16 +21,16 @@ namespace NativeConsolePKCEClient
 
         public SystemBrowser(int? port = null, string path = null)
         {
-            _path = path;
+            //_path = path;
 
-            if (!port.HasValue)
-            {
-                Port = GetRandomUnusedPort();
-            }
-            else
-            {
-                Port = port.Value;
-            }
+            //if (!port.HasValue)
+            //{
+            //    Port = GetRandomUnusedPort();
+            //}
+            //else
+            //{
+            //    Port = port.Value;
+            //}
         }
 
         private int GetRandomUnusedPort()
@@ -43,6 +44,29 @@ namespace NativeConsolePKCEClient
 
         public async Task<BrowserResult> InvokeAsync(BrowserOptions options)
         {
+            var startUri = new Uri(options.StartUrl);
+            var handler = new HttpClientHandler
+            {
+                AllowAutoRedirect = false,
+                PreAuthenticate = true,
+                UseDefaultCredentials = true
+            };
+            var client = new HttpClient(handler)
+            {
+                Timeout = TimeSpan.FromHours(1),
+                BaseAddress = new Uri(startUri.GetLeftPart(System.UriPartial.Authority))
+            };
+
+            var response = await client.GetAsync(options.StartUrl);
+            response = await client.GetAsync(response.Headers.Location);
+            response = await client.GetAsync(response.Headers.Location);
+            response = await client.GetAsync(response.Headers.Location);
+
+            return new BrowserResult
+            {
+                ResultType = BrowserResultType.Success,
+                Response = response.Headers.Location.Query.Substring(1)
+            };
             using (var listener = new LoopbackHttpListener(Port, _path))
             {
                 OpenBrowser(options.StartUrl);

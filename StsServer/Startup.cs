@@ -40,7 +40,13 @@ namespace StsServer
             services.Configure<IISOptions>(iis =>
             {
                 iis.AuthenticationDisplayName = "Windows";
-                iis.AutomaticAuthentication = true;
+                iis.AutomaticAuthentication = false;
+            });
+
+            services.Configure<IISServerOptions>(iis =>
+            {
+                iis.AuthenticationDisplayName = "Windows";
+                iis.AutomaticAuthentication = false;
             });
 
             var builder = services.AddIdentityServer(options =>
