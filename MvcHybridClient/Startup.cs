@@ -21,7 +21,7 @@ namespace MvcHybridClient
 
         public IConfiguration Configuration { get; }
 
-        private string stsServer = "https://localhost:44364";
+        private string stsServer = "https://localhost:44397";
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
